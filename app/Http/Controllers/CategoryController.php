@@ -12,17 +12,30 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         $data = $request->validated();
-        $image = $request->image;
-        $newImageName = time() . '-' . $image->getClientOriginalName();
-        $image->storeAs('categories', $newImageName, 'public');
-        $data['image'] = $newImageName;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $newImageName = time() . '-' . $image->getClientOriginalName();
+            $image->storeAs('categories', $newImageName, 'public');
+            $data['image'] = $newImageName;
+        }
+
         $category = Category::create($data);
+        $category->image = asset('storage/categories/' . $category->image);
+
         return response()->json($category, 201);
     }
 
     public function index()
     {
-        return response()->json(Category::all());
+        $categories = Category::all();
+
+        $categories->transform(function ($category) {
+            $category->image = asset('storage/categories/' . $category->image);
+            return $category;
+        });
+
+        return response()->json($categories);
     }
 
     public function update(StoreCategoryRequest $request, Category $category)
@@ -37,6 +50,8 @@ class CategoryController extends Controller
         }
 
         $category->update($data);
+        $category->image = asset('storage/categories/' . $category->image);
+
         return response()->json($category);
     }
 

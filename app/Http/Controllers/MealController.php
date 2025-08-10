@@ -7,28 +7,48 @@ use App\Http\Requests\StoreMealRequest;
 use App\Models\Category;
 use App\Models\Meal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MealController extends Controller
 {
     public function store(StoreMealRequest $request)
     {
         $data = $request->validated();
-        $image = $request->image;
-        $newImageName = time() . '-' . $image->getClientOriginalName();
-        $image->storeAs('meals', $newImageName, 'public');
-        $data['image'] = $newImageName;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $newImageName = time() . '-' . $image->getClientOriginalName();
+            $image->storeAs('meals', $newImageName, 'public');
+            $data['image'] = $newImageName;
+        }
+
         $meal = Meal::create($data);
+        $meal->image = asset('storage/meals/' . $meal->image);
+
         return response()->json($meal, 201);
     }
 
     public function index()
     {
-        return response()->json(Meal::with('category')->get());
+        $meals = Meal::with('category')->get();
+
+        
+        $meals->transform(function ($meal) {
+            $meal->image = asset('storage/meals/' . $meal->image);
+            return $meal;
+        });
+
+        return response()->json($meals);
     }
 
     public function byCategory(Category $category)
     {
-        return response()->json($category->meals);
+        $meals = $category->meals->map(function ($meal) {
+            $meal->image = asset('storage/meals/' . $meal->image);
+            return $meal;
+        });
+
+        return response()->json($meals);
     }
 
     public function update(StoreMealRequest $request, Meal $meal)
@@ -43,6 +63,8 @@ class MealController extends Controller
         }
 
         $meal->update($data);
+        $meal->image = asset('storage/meals/' . $meal->image);
+
         return response()->json($meal);
     }
 

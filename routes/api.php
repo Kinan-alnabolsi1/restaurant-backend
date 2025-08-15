@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 
-// Route::post('register', [UserController::class, 'register']);
+Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 

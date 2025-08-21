@@ -37,8 +37,7 @@ class StoreMealRequest extends FormRequest
         return [
             'category_id.exists' => 'The selected category is invalid.',
             'category_id.required' => 'Please select a category.',
-            'image.required' => 'An image is required.',
-            'image.mimes' => 'The image must be a file of type: png, jpg.',
+            'image.mimes' => 'The image must be a file of type: png, jpg, jpeg.',
         ];
     }
 }

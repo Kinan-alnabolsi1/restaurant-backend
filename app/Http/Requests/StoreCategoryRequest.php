@@ -27,4 +27,15 @@ class StoreCategoryRequest extends FormRequest
             'image' => 'mimes:png,jpg,jpeg',
         ];
     }
+
+
+    public function messages(): array
+    {
+        return [
+            'name_en.required' => 'english name is required.',
+            'name_ar.required' => 'arabic name is required.',
+            'image.mimes' => 'The image must be a file of type: png, jpg , jpeg.',
+        ];
+    }
 }
+

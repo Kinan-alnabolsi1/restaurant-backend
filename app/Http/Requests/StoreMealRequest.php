@@ -26,7 +26,7 @@ class StoreMealRequest extends FormRequest
             'name_ar' => 'required|string',
             'description_en' => 'nullable|string',
             'description_ar' => 'nullable|string',
-            'image' => 'required|mimes:png,jpg,jpeg',
+            'image' => 'mimes:png,jpg,jpeg',
             'price' => 'nullable|numeric',
             'category_id' => 'required|exists:categories,id',
         ];

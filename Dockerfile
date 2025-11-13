@@ -19,8 +19,7 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 EXPOSE 8080
 
 
-CMD php artisan migrate:install && \
-    php artisan cache:table && \
+CMD php artisan cache:table && \
     php artisan session:table && \
     php artisan queue:table && \
     php artisan migrate --force && \
